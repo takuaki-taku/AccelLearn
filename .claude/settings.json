@@ -1,5 +1,57 @@
 {
   "enabledPlugins": {
     "expo@claude-plugins-official": true
+  },
+  "permissions": {
+    "allow": [
+      "Bash(npx expo start*)",
+      "Bash(npx expo run:ios*)",
+      "Bash(npx expo run:android*)",
+      "Bash(npx expo export*)",
+      "Bash(npx expo install*)",
+      "Bash(npm run start*)",
+      "Bash(npm run ios*)",
+      "Bash(npm run android*)",
+      "Bash(npm run web*)",
+      "Bash(npm install*)",
+      "Bash(npm ci)",
+      "Bash(npx tsc --noEmit*)",
+      "Bash(npx tsc*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git branch*)",
+      "Bash(git add *)",
+      "Bash(git commit*)",
+      "Bash(git stash*)",
+      "Bash(git checkout -b *)",
+      "Bash(git switch -c *)",
+      "Bash(git switch *)",
+      "Bash(ls *)",
+      "Bash(find . *)",
+      "Bash(grep *)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(git push --force*)",
+      "Bash(git reset --hard*)",
+      "Bash(git clean -f*)",
+      "Bash(git checkout -- .)",
+      "Bash(git restore .)",
+      "Bash(npx expo publish*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-commit-check.sh"
+          }
+        ]
+      }
+    ]
   }
 }
