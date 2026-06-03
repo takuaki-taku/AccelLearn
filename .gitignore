@@ -30,6 +30,10 @@ yarn-error.*
 .DS_Store
 *.pem
 
+# design files
+*.excalidraw.png
+*.excalidraw
+
 # local env files
 .env*.local
 
