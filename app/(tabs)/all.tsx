@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTasks } from '../../hooks/useTasks';
 import { addDays, REVIEW_DAYS } from '../../utils/scheduler';
 import { EditTaskModal } from '../../components/EditTaskModal';
+import { AddTaskModal } from '../../components/AddTaskModal';
 import { AccelTask, AttemptResult } from '../../types/task';
 
 const STAGE_OFFSETS = [0, ...REVIEW_DAYS]; // [0, 1, 7, 21]
@@ -32,11 +33,13 @@ function sortTasks(tasks: AccelTask[]): AccelTask[] {
 }
 
 export default function AllTasksScreen() {
-  const { tasks, loading, updateTask, deleteTask } = useTasks();
+  const { tasks, loading, addTask, updateTask, deleteTask } = useTasks();
   const [editingTask, setEditingTask] = useState<AccelTask | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const [selectedTag, setSelectedTag] = useState<string>('すべて');
 
-  const allTags = ['すべて', ...Array.from(new Set(tasks.map((t) => t.tag).filter((t): t is string => Boolean(t))))];
+  const existingTags = [...new Set(tasks.map((t) => t.tag).filter((t): t is string => Boolean(t)))];
+  const allTagFilters = ['すべて', ...existingTags];
   const filtered = selectedTag === 'すべて' ? tasks : tasks.filter((t) => t.tag === selectedTag);
   const sorted = sortTasks(filtered);
 
@@ -54,6 +57,17 @@ export default function AllTasksScreen() {
   function handleSaveEdit(taskId: string, input: { title: string; tag?: string; referenceUrl?: string; memo?: string }) {
     updateTask(taskId, input);
     setEditingTask(null);
+  }
+
+  async function handleAddTask(input: {
+    title: string;
+    tag?: string;
+    referenceUrl?: string;
+    memo?: string;
+    firstAttemptResult: AttemptResult;
+  }) {
+    await addTask(input);
+    setModalVisible(false);
   }
 
   if (loading) {
@@ -74,29 +88,32 @@ export default function AllTasksScreen() {
       </View>
 
       {/* タグフィルターピル */}
-      {allTags.length > 1 && (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 12, gap: 8, flexDirection: 'row' }}
-        >
-          {allTags.map((tag) => (
-            <TouchableOpacity
-              key={tag}
-              onPress={() => setSelectedTag(tag)}
-              className={selectedTag === tag ? 'bg-yellow-400 rounded-full px-4 py-1' : 'bg-zinc-800 rounded-full px-4 py-1'}
-            >
-              <Text className={selectedTag === tag ? 'text-zinc-900 font-semibold text-sm' : 'text-zinc-400 text-sm'}>
-                {tag}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+      {existingTags.length > 0 && (
+        <View style={{ height: 44 }}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 16, alignItems: 'center' }}
+          >
+            {allTagFilters.map((t, i) => (
+              <TouchableOpacity
+                key={t}
+                onPress={() => setSelectedTag(t)}
+                style={{ marginRight: i < allTagFilters.length - 1 ? 8 : 0 }}
+                className={selectedTag === t ? 'bg-yellow-400 rounded-full px-4 py-1' : 'bg-zinc-800 rounded-full px-4 py-1'}
+              >
+                <Text className={selectedTag === t ? 'text-zinc-900 font-semibold text-sm' : 'text-zinc-400 text-sm'}>
+                  {t}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
       )}
 
       {/* カラムヘッダー */}
       {tasks.length > 0 && (
-        <View className="flex-row items-center px-4 pb-2 border-b border-zinc-800">
+        <View className="flex-row items-center px-4 py-2 border-b border-zinc-800">
           <Text className="flex-1 text-zinc-600 text-xs">タスク名</Text>
           {STAGE_LABELS.map((label) => (
             <View key={label} style={{ width: COL_WIDTH }} className="items-center">
@@ -114,7 +131,7 @@ export default function AllTasksScreen() {
         <FlatList
           data={sorted}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{ paddingBottom: 32 }}
+          contentContainerStyle={{ paddingBottom: 100 }}
           renderItem={({ item }) => {
             const history = item.reviewHistory ?? [];
             return (
@@ -155,10 +172,28 @@ export default function AllTasksScreen() {
         />
       )}
 
+      {/* FAB */}
+      <TouchableOpacity
+        onPress={() => setModalVisible(true)}
+        className="absolute bottom-8 right-6 bg-yellow-400 w-14 h-14 rounded-full items-center justify-center"
+        style={{ elevation: 6 }}
+      >
+        <Text className="text-zinc-900 text-3xl font-light" style={{ lineHeight: 36 }}>+</Text>
+      </TouchableOpacity>
+
+      <AddTaskModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSave={handleAddTask}
+        existingTags={existingTags}
+        initialTag={selectedTag !== 'すべて' ? selectedTag : undefined}
+      />
+
       <EditTaskModal
         task={editingTask}
         onClose={() => setEditingTask(null)}
         onSave={handleSaveEdit}
+        existingTags={existingTags}
       />
     </SafeAreaView>
   );

@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
+  ScrollView,
 } from 'react-native';
 import { AccelTask } from '../types/task';
 
@@ -22,11 +23,13 @@ interface EditTaskModalProps {
   task: AccelTask | null;
   onClose: () => void;
   onSave: (taskId: string, input: EditTaskInput) => void;
+  existingTags?: string[];
 }
 
-export function EditTaskModal({ task, onClose, onSave }: EditTaskModalProps) {
+export function EditTaskModal({ task, onClose, onSave, existingTags = [] }: EditTaskModalProps) {
   const [title, setTitle] = useState('');
   const [tag, setTag] = useState('');
+  const [creatingNewTag, setCreatingNewTag] = useState(false);
   const [url, setUrl] = useState('');
   const [memo, setMemo] = useState('');
 
@@ -34,6 +37,7 @@ export function EditTaskModal({ task, onClose, onSave }: EditTaskModalProps) {
     if (task) {
       setTitle(task.title);
       setTag(task.tag ?? '');
+      setCreatingNewTag(task.tag ? !existingTags.includes(task.tag) : false);
       setUrl(task.referenceUrl ?? '');
       setMemo(task.memo ?? '');
     }
@@ -86,15 +90,50 @@ export function EditTaskModal({ task, onClose, onSave }: EditTaskModalProps) {
             onChangeText={setTitle}
           />
 
-          <Text className="text-zinc-400 text-sm mb-1">カテゴリ（任意）</Text>
-          <TextInput
-            className="bg-zinc-800 text-white rounded-lg px-3 mb-4"
-            style={{ paddingVertical: 12 }}
-            placeholder="例: 数学, アルゴリズム"
-            placeholderTextColor="#52525b"
-            value={tag}
-            onChangeText={setTag}
-          />
+          <Text className="text-zinc-400 text-sm mb-2">カテゴリー（任意）</Text>
+          {existingTags.length > 0 && (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ marginBottom: 8 }}
+              contentContainerStyle={{ alignItems: 'center', paddingRight: 4 }}
+            >
+              {existingTags.map((t) => (
+                <TouchableOpacity
+                  key={t}
+                  onPress={() => { setTag(t); setCreatingNewTag(false); }}
+                  style={{ marginRight: 8 }}
+                  className={tag === t && !creatingNewTag ? 'bg-yellow-400 rounded-full px-3 py-1' : 'bg-zinc-800 rounded-full px-3 py-1 border border-zinc-700'}
+                >
+                  <Text className={tag === t && !creatingNewTag ? 'text-zinc-900 text-sm font-semibold' : 'text-zinc-400 text-sm'}>
+                    {t}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+              <TouchableOpacity
+                onPress={() => { setCreatingNewTag(true); setTag(''); }}
+                style={{ marginRight: 4 }}
+                className={creatingNewTag ? 'bg-yellow-400 rounded-full px-3 py-1' : 'bg-zinc-800 rounded-full px-3 py-1 border border-zinc-700'}
+              >
+                <Text className={creatingNewTag ? 'text-zinc-900 text-sm font-semibold' : 'text-zinc-400 text-sm'}>
+                  ＋ 新規
+                </Text>
+              </TouchableOpacity>
+            </ScrollView>
+          )}
+
+          {(creatingNewTag || existingTags.length === 0) ? (
+            <TextInput
+              className="bg-zinc-800 text-white rounded-lg px-3 mb-4"
+              style={{ paddingVertical: 12 }}
+              placeholder="カテゴリー名を入力"
+              placeholderTextColor="#52525b"
+              value={tag}
+              onChangeText={setTag}
+            />
+          ) : (
+            <View className="mb-2" />
+          )}
 
           <Text className="text-zinc-400 text-sm mb-1">URL（任意）</Text>
           <TextInput

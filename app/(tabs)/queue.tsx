@@ -40,6 +40,8 @@ export default function QueueScreen() {
     setModalVisible(false);
   }
 
+  const existingTags = [...new Set(tasks.map((t) => t.tag).filter((t): t is string => Boolean(t)))];
+
   if (loading) {
     return (
       <SafeAreaView className="flex-1 bg-zinc-950 items-center justify-center">
@@ -89,6 +91,7 @@ export default function QueueScreen() {
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onSave={handleAddTask}
+        existingTags={existingTags}
       />
     </SafeAreaView>
   );
