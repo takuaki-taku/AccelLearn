@@ -3,6 +3,13 @@
     "version": ">= 20.0.0"
   },
   "build": {
+    "simulator": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      }
+    },
     "preview": {
       "android": {
         "buildType": "apk"
