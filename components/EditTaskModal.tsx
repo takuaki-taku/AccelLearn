@@ -11,6 +11,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { AccelTask } from '../types/task';
+import { useTheme } from '../hooks/useTheme';
 
 interface EditTaskInput {
   title: string;
@@ -27,11 +28,24 @@ interface EditTaskModalProps {
 }
 
 export function EditTaskModal({ task, onClose, onSave, existingTags = [] }: EditTaskModalProps) {
+  const { isDark } = useTheme();
   const [title, setTitle] = useState('');
   const [tag, setTag] = useState('');
   const [creatingNewTag, setCreatingNewTag] = useState(false);
   const [url, setUrl] = useState('');
   const [memo, setMemo] = useState('');
+
+  const sheetBg = isDark ? 'bg-zinc-900' : 'bg-white';
+  const sheetBorder = isDark ? 'border-zinc-800' : 'border-zinc-200';
+  const inputBg = isDark ? 'bg-zinc-800' : 'bg-zinc-100';
+  const inputBorder = isDark ? 'border-zinc-700' : 'border-zinc-200';
+  const titleText = isDark ? 'text-white' : 'text-zinc-900';
+  const labelText = isDark ? 'text-zinc-400' : 'text-zinc-500';
+  const pillBg = isDark ? 'bg-zinc-800' : 'bg-zinc-100';
+  const pillBorder = isDark ? 'border-zinc-700' : 'border-zinc-300';
+  const pillText = isDark ? 'text-zinc-400' : 'text-zinc-500';
+  const disabledBg = isDark ? 'bg-zinc-700' : 'bg-zinc-200';
+  const disabledText = isDark ? 'text-zinc-500' : 'text-zinc-400';
 
   useEffect(() => {
     if (task) {
@@ -42,10 +56,6 @@ export function EditTaskModal({ task, onClose, onSave, existingTags = [] }: Edit
       setMemo(task.memo ?? '');
     }
   }, [task]);
-
-  function handleClose() {
-    onClose();
-  }
 
   function handleSave() {
     if (!task || !title.trim()) return;
@@ -60,29 +70,21 @@ export function EditTaskModal({ task, onClose, onSave, existingTags = [] }: Edit
   const canSave = title.trim().length > 0;
 
   return (
-    <Modal
-      visible={task !== null}
-      transparent
-      animationType="slide"
-      onRequestClose={handleClose}
-    >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="flex-1"
-      >
-        <Pressable className="flex-1" onPress={handleClose} />
+    <Modal visible={task !== null} transparent animationType="slide" onRequestClose={onClose}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1">
+        <Pressable className="flex-1" onPress={onClose} />
 
-        <View className="bg-zinc-100 dark:bg-zinc-900 rounded-t-2xl px-4 pt-5 pb-10 border-t border-zinc-200 dark:border-zinc-800">
+        <View className={`${sheetBg} rounded-t-2xl px-4 pt-5 pb-10 border-t ${sheetBorder}`}>
           <View className="flex-row items-center justify-between mb-6">
-            <Text className="text-zinc-900 dark:text-white text-xl font-bold">タスクを編集</Text>
-            <TouchableOpacity onPress={handleClose}>
-              <Text className="text-zinc-500 dark:text-zinc-400 text-base">キャンセル</Text>
+            <Text className={`${titleText} text-xl font-bold`}>タスクを編集</Text>
+            <TouchableOpacity onPress={onClose}>
+              <Text className={`${labelText} text-base`}>キャンセル</Text>
             </TouchableOpacity>
           </View>
 
-          <Text className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">タイトル（必須）</Text>
+          <Text className={`${labelText} text-sm mb-1`}>タイトル（必須）</Text>
           <TextInput
-            className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg px-3 mb-4 border border-zinc-200 dark:border-zinc-700"
+            className={`${inputBg} ${titleText} rounded-lg px-3 mb-4 border ${inputBorder}`}
             style={{ paddingVertical: 12 }}
             placeholder="タイトル"
             placeholderTextColor="#71717a"
@@ -90,7 +92,7 @@ export function EditTaskModal({ task, onClose, onSave, existingTags = [] }: Edit
             onChangeText={setTitle}
           />
 
-          <Text className="text-zinc-500 dark:text-zinc-400 text-sm mb-2">カテゴリー（任意）</Text>
+          <Text className={`${labelText} text-sm mb-2`}>カテゴリー（任意）</Text>
           {existingTags.length > 0 && (
             <ScrollView
               horizontal
@@ -103,9 +105,9 @@ export function EditTaskModal({ task, onClose, onSave, existingTags = [] }: Edit
                   key={t}
                   onPress={() => { setTag(t); setCreatingNewTag(false); }}
                   style={{ marginRight: 8 }}
-                  className={tag === t && !creatingNewTag ? 'bg-yellow-400 rounded-full px-3 py-1' : 'bg-white dark:bg-zinc-800 rounded-full px-3 py-1 border border-zinc-200 dark:border-zinc-700'}
+                  className={tag === t && !creatingNewTag ? 'bg-yellow-400 rounded-full px-3 py-1' : `${pillBg} rounded-full px-3 py-1 border ${pillBorder}`}
                 >
-                  <Text className={tag === t && !creatingNewTag ? 'text-zinc-900 text-sm font-semibold' : 'text-zinc-500 dark:text-zinc-400 text-sm'}>
+                  <Text className={tag === t && !creatingNewTag ? 'text-zinc-900 text-sm font-semibold' : `${pillText} text-sm`}>
                     {t}
                   </Text>
                 </TouchableOpacity>
@@ -113,9 +115,9 @@ export function EditTaskModal({ task, onClose, onSave, existingTags = [] }: Edit
               <TouchableOpacity
                 onPress={() => { setCreatingNewTag(true); setTag(''); }}
                 style={{ marginRight: 4 }}
-                className={creatingNewTag ? 'bg-yellow-400 rounded-full px-3 py-1' : 'bg-white dark:bg-zinc-800 rounded-full px-3 py-1 border border-zinc-200 dark:border-zinc-700'}
+                className={creatingNewTag ? 'bg-yellow-400 rounded-full px-3 py-1' : `${pillBg} rounded-full px-3 py-1 border ${pillBorder}`}
               >
-                <Text className={creatingNewTag ? 'text-zinc-900 text-sm font-semibold' : 'text-zinc-500 dark:text-zinc-400 text-sm'}>
+                <Text className={creatingNewTag ? 'text-zinc-900 text-sm font-semibold' : `${pillText} text-sm`}>
                   ＋ 新規
                 </Text>
               </TouchableOpacity>
@@ -124,7 +126,7 @@ export function EditTaskModal({ task, onClose, onSave, existingTags = [] }: Edit
 
           {(creatingNewTag || existingTags.length === 0) ? (
             <TextInput
-              className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg px-3 mb-4 border border-zinc-200 dark:border-zinc-700"
+              className={`${inputBg} ${titleText} rounded-lg px-3 mb-4 border ${inputBorder}`}
               style={{ paddingVertical: 12 }}
               placeholder="カテゴリー名を入力"
               placeholderTextColor="#71717a"
@@ -135,9 +137,9 @@ export function EditTaskModal({ task, onClose, onSave, existingTags = [] }: Edit
             <View className="mb-2" />
           )}
 
-          <Text className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">URL（任意）</Text>
+          <Text className={`${labelText} text-sm mb-1`}>URL（任意）</Text>
           <TextInput
-            className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg px-3 mb-4 border border-zinc-200 dark:border-zinc-700"
+            className={`${inputBg} ${titleText} rounded-lg px-3 mb-4 border ${inputBorder}`}
             style={{ paddingVertical: 12 }}
             placeholder="https://..."
             placeholderTextColor="#71717a"
@@ -148,9 +150,9 @@ export function EditTaskModal({ task, onClose, onSave, existingTags = [] }: Edit
             autoCorrect={false}
           />
 
-          <Text className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">メモ（任意）</Text>
+          <Text className={`${labelText} text-sm mb-1`}>メモ（任意）</Text>
           <TextInput
-            className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg px-3 mb-6 border border-zinc-200 dark:border-zinc-700"
+            className={`${inputBg} ${titleText} rounded-lg px-3 mb-6 border ${inputBorder}`}
             style={{ paddingVertical: 12, height: 80, textAlignVertical: 'top' }}
             placeholder="解法のヒント、気づきなど..."
             placeholderTextColor="#71717a"
@@ -162,9 +164,9 @@ export function EditTaskModal({ task, onClose, onSave, existingTags = [] }: Edit
           <TouchableOpacity
             onPress={handleSave}
             disabled={!canSave}
-            className={canSave ? 'bg-yellow-400 rounded-xl py-4 items-center' : 'bg-zinc-200 dark:bg-zinc-700 rounded-xl py-4 items-center'}
+            className={canSave ? 'bg-yellow-400 rounded-xl py-4 items-center' : `${disabledBg} rounded-xl py-4 items-center`}
           >
-            <Text className={canSave ? 'text-zinc-900 font-bold text-base' : 'text-zinc-400 dark:text-zinc-500 font-bold text-base'}>
+            <Text className={canSave ? 'text-zinc-900 font-bold text-base' : `${disabledText} font-bold text-base`}>
               保存する
             </Text>
           </TouchableOpacity>

@@ -6,6 +6,7 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated';
 import { AccelTask, AttemptResult } from '../types/task';
+import { useTheme } from '../hooks/useTheme';
 
 const REVIEW_LABELS = ['第1回レビュー', '第2回レビュー', '第3回レビュー'];
 
@@ -21,6 +22,7 @@ interface TaskCardProps {
 }
 
 export function TaskCard({ task, onJudge }: TaskCardProps) {
+  const { isDark } = useTheme();
   const translateX = useSharedValue(0);
   const opacity = useSharedValue(1);
 
@@ -46,20 +48,27 @@ export function TaskCard({ task, onJudge }: TaskCardProps) {
   const reviewLabel = REVIEW_LABELS[task.reviewStage] ?? '最終レビュー';
   const firstResultSymbol = RESULT_SYMBOLS[task.firstAttemptResult];
 
+  const cardBg = isDark ? 'bg-zinc-900' : 'bg-zinc-100';
+  const cardBorder = isDark ? 'border-zinc-800' : 'border-zinc-200';
+  const titleText = isDark ? 'text-white' : 'text-zinc-900';
+  const urlText = isDark ? 'text-yellow-400' : 'text-yellow-600';
+  const memoText = isDark ? 'text-zinc-400' : 'text-zinc-500';
+  const metaText = isDark ? 'text-zinc-600' : 'text-zinc-400';
+
   return (
     <Animated.View style={animatedStyle}>
-      <View className="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-4 mb-3 border border-zinc-200 dark:border-zinc-800">
+      <View className={`${cardBg} rounded-xl p-4 mb-3 border ${cardBorder}`}>
         <TouchableOpacity onPress={openUrl} activeOpacity={task.referenceUrl ? 0.7 : 1}>
-          <Text className="text-zinc-900 dark:text-white text-base font-semibold">{task.title}</Text>
+          <Text className={`${titleText} text-base font-semibold`}>{task.title}</Text>
           {task.referenceUrl && (
-            <Text className="text-yellow-600 dark:text-yellow-400 text-xs mt-1" numberOfLines={1}>
+            <Text className={`${urlText} text-xs mt-1`} numberOfLines={1}>
               {task.referenceUrl}
             </Text>
           )}
           {task.memo ? (
-            <Text className="text-zinc-500 dark:text-zinc-400 text-sm mt-2">{task.memo}</Text>
+            <Text className={`${memoText} text-sm mt-2`}>{task.memo}</Text>
           ) : null}
-          <Text className="text-zinc-400 dark:text-zinc-600 text-xs mt-3">
+          <Text className={`${metaText} text-xs mt-3`}>
             {reviewLabel}　初回: {firstResultSymbol}
           </Text>
         </TouchableOpacity>

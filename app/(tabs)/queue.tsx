@@ -3,10 +3,9 @@ import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useColorScheme } from 'nativewind';
 import { useTasks } from '../../hooks/useTasks';
 import { getTodaysTasks, judgeTask, todayString } from '../../utils/scheduler';
-import { useThemeToggle } from '../../hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import { TaskCard } from '../../components/TaskCard';
 import { AddTaskModal } from '../../components/AddTaskModal';
 import { HowToModal } from '../../components/HowToModal';
@@ -16,13 +15,16 @@ const HOWTO_KEY = 'accellearn_howto_shown';
 
 export default function QueueScreen() {
   const { tasks, loading, addTask, updateTask } = useTasks();
+  const { isDark, toggle } = useTheme();
   const [queue, setQueue] = useState<AccelTask[]>([]);
   const [initialized, setInitialized] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [howToVisible, setHowToVisible] = useState(false);
-  const { colorScheme } = useColorScheme();
-  const { toggle } = useThemeToggle();
-  const isDark = colorScheme === 'dark';
+
+  const bg = isDark ? 'bg-zinc-950' : 'bg-white';
+  const titleText = isDark ? 'text-white' : 'text-zinc-900';
+  const subText = isDark ? 'text-zinc-400' : 'text-zinc-500';
+  const iconColor = isDark ? '#a1a1aa' : '#71717a';
 
   useEffect(() => {
     AsyncStorage.getItem(HOWTO_KEY).then((shown) => {
@@ -62,22 +64,21 @@ export default function QueueScreen() {
   }
 
   const existingTags = [...new Set(tasks.map((t) => t.tag).filter((t): t is string => Boolean(t)))];
-  const iconColor = isDark ? '#a1a1aa' : '#71717a';
 
   if (loading) {
     return (
-      <SafeAreaView className="flex-1 bg-white dark:bg-zinc-950 items-center justify-center">
-        <Text className="text-zinc-500 dark:text-zinc-400">読み込み中...</Text>
+      <SafeAreaView className={`flex-1 ${bg} items-center justify-center`}>
+        <Text className={subText}>読み込み中...</Text>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-zinc-950">
+    <SafeAreaView className={`flex-1 ${bg}`}>
       <View className="px-4 pt-6 pb-3 flex-row items-start justify-between">
         <View>
-          <Text className="text-zinc-900 dark:text-white text-3xl font-extrabold tracking-tight">Today's Queue</Text>
-          <Text className="text-zinc-500 dark:text-zinc-400 mt-1">
+          <Text className={`${titleText} text-3xl font-extrabold tracking-tight`}>Today's Queue</Text>
+          <Text className={`${subText} mt-1`}>
             {queue.length > 0 ? `${queue.length}件 残っています` : '記憶を加速させよう⚡'}
           </Text>
         </View>
@@ -94,8 +95,8 @@ export default function QueueScreen() {
       {queue.length === 0 ? (
         <View className="flex-1 items-center justify-center">
           <Text className="text-5xl mb-4">⚡</Text>
-          <Text className="text-zinc-900 dark:text-white text-xl font-bold">本日のタスク完了！</Text>
-          <Text className="text-zinc-500 dark:text-zinc-400 mt-2">また明日</Text>
+          <Text className={`${titleText} text-xl font-bold`}>本日のタスク完了！</Text>
+          <Text className={`${subText} mt-2`}>また明日</Text>
         </View>
       ) : (
         <FlatList

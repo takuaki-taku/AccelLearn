@@ -3,11 +3,12 @@ import { View, Text, FlatList, TouchableOpacity, Alert, ScrollView } from 'react
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTasks } from '../../hooks/useTasks';
 import { addDays, REVIEW_DAYS } from '../../utils/scheduler';
+import { useTheme } from '../../hooks/useTheme';
 import { EditTaskModal } from '../../components/EditTaskModal';
 import { AddTaskModal } from '../../components/AddTaskModal';
 import { AccelTask, AttemptResult } from '../../types/task';
 
-const STAGE_OFFSETS = [0, ...REVIEW_DAYS]; // [0, 1, 7, 21]
+const STAGE_OFFSETS = [0, ...REVIEW_DAYS];
 const STAGE_LABELS = ['1日目', '2日目', '1週間', '3週間'];
 const COL_WIDTH = 52;
 
@@ -34,9 +35,17 @@ function sortTasks(tasks: AccelTask[]): AccelTask[] {
 
 export default function AllTasksScreen() {
   const { tasks, loading, addTask, updateTask, deleteTask } = useTasks();
+  const { isDark } = useTheme();
   const [editingTask, setEditingTask] = useState<AccelTask | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTag, setSelectedTag] = useState<string>('すべて');
+
+  const bg = isDark ? 'bg-zinc-950' : 'bg-white';
+  const titleText = isDark ? 'text-white' : 'text-zinc-900';
+  const subText = isDark ? 'text-zinc-400' : 'text-zinc-500';
+  const mutedText = isDark ? 'text-zinc-600' : 'text-zinc-400';
+  const rowBorder = isDark ? 'border-zinc-800' : 'border-zinc-100';
+  const tagBg = isDark ? 'bg-zinc-800' : 'bg-zinc-100';
 
   const existingTags = [...new Set(tasks.map((t) => t.tag).filter((t): t is string => Boolean(t)))];
   const allTagFilters = ['すべて', ...existingTags];
@@ -72,22 +81,21 @@ export default function AllTasksScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView className="flex-1 bg-white dark:bg-zinc-950 items-center justify-center">
-        <Text className="text-zinc-500 dark:text-zinc-400">読み込み中...</Text>
+      <SafeAreaView className={`flex-1 ${bg} items-center justify-center`}>
+        <Text className={subText}>読み込み中...</Text>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-zinc-950">
+    <SafeAreaView className={`flex-1 ${bg}`}>
       <View className="px-4 pt-6 pb-3">
-        <Text className="text-zinc-900 dark:text-white text-3xl font-extrabold tracking-tight">All Tasks</Text>
-        <Text className="text-zinc-500 dark:text-zinc-400 mt-1">
+        <Text className={`${titleText} text-3xl font-extrabold tracking-tight`}>All Tasks</Text>
+        <Text className={`${subText} mt-1`}>
           {tasks.length > 0 ? `${tasks.length}件登録中` : 'タスクがありません'}
         </Text>
       </View>
 
-      {/* タグフィルターピル */}
       {existingTags.length > 0 && (
         <View style={{ height: 44 }}>
           <ScrollView
@@ -100,9 +108,9 @@ export default function AllTasksScreen() {
                 key={t}
                 onPress={() => setSelectedTag(t)}
                 style={{ marginRight: i < allTagFilters.length - 1 ? 8 : 0 }}
-                className={selectedTag === t ? 'bg-yellow-400 rounded-full px-4 py-1' : 'bg-zinc-100 dark:bg-zinc-800 rounded-full px-4 py-1'}
+                className={selectedTag === t ? 'bg-yellow-400 rounded-full px-4 py-1' : `${tagBg} rounded-full px-4 py-1`}
               >
-                <Text className={selectedTag === t ? 'text-zinc-900 font-semibold text-sm' : 'text-zinc-500 dark:text-zinc-400 text-sm'}>
+                <Text className={selectedTag === t ? 'text-zinc-900 font-semibold text-sm' : `${subText} text-sm`}>
                   {t}
                 </Text>
               </TouchableOpacity>
@@ -111,13 +119,12 @@ export default function AllTasksScreen() {
         </View>
       )}
 
-      {/* カラムヘッダー */}
       {tasks.length > 0 && (
-        <View className="flex-row items-center px-4 py-2 border-b border-zinc-200 dark:border-zinc-800">
-          <Text className="flex-1 text-zinc-400 dark:text-zinc-600 text-xs">タスク名</Text>
+        <View className={`flex-row items-center px-4 py-2 border-b ${isDark ? 'border-zinc-800' : 'border-zinc-200'}`}>
+          <Text className={`flex-1 ${mutedText} text-xs`}>タスク名</Text>
           {STAGE_LABELS.map((label) => (
             <View key={label} style={{ width: COL_WIDTH }} className="items-center">
-              <Text className="text-zinc-400 dark:text-zinc-600 text-xs">{label}</Text>
+              <Text className={`${mutedText} text-xs`}>{label}</Text>
             </View>
           ))}
         </View>
@@ -125,7 +132,7 @@ export default function AllTasksScreen() {
 
       {tasks.length === 0 ? (
         <View className="flex-1 items-center justify-center">
-          <Text className="text-zinc-400 dark:text-zinc-600 text-base">＋ボタンからタスクを追加してください</Text>
+          <Text className={`${mutedText} text-base`}>＋ボタンからタスクを追加してください</Text>
         </View>
       ) : (
         <FlatList
@@ -139,14 +146,14 @@ export default function AllTasksScreen() {
                 onPress={() => setEditingTask(item)}
                 onLongPress={() => handleLongPress(item)}
                 activeOpacity={0.7}
-                className="flex-row items-center px-4 py-3 border-b border-zinc-100 dark:border-zinc-800"
+                className={`flex-row items-center px-4 py-3 border-b ${rowBorder}`}
               >
                 <View className="flex-1 pr-2">
-                  <Text className="text-zinc-900 dark:text-white text-sm font-semibold" numberOfLines={1}>
+                  <Text className={`${titleText} text-sm font-semibold`} numberOfLines={1}>
                     {item.title}
                   </Text>
                   {item.tag ? (
-                    <Text className="text-zinc-400 dark:text-zinc-600 text-xs mt-0.5">{item.tag}</Text>
+                    <Text className={`${mutedText} text-xs mt-0.5`}>{item.tag}</Text>
                   ) : null}
                 </View>
 
@@ -155,7 +162,7 @@ export default function AllTasksScreen() {
                   const entry = history.find((e) => e.stage === stageIndex);
                   return (
                     <View key={stageIndex} style={{ width: COL_WIDTH }} className="items-center">
-                      <Text className="text-zinc-400 dark:text-zinc-600 text-xs">{toMD(dateStr)}</Text>
+                      <Text className={`${mutedText} text-xs`}>{toMD(dateStr)}</Text>
                       {entry ? (
                         <Text className="text-base" style={{ lineHeight: 20 }}>
                           {RESULT_SYMBOLS[entry.result]}
@@ -172,7 +179,6 @@ export default function AllTasksScreen() {
         />
       )}
 
-      {/* FAB */}
       <TouchableOpacity
         onPress={() => setModalVisible(true)}
         className="absolute bottom-8 right-6 bg-yellow-400 w-14 h-14 rounded-full items-center justify-center"
