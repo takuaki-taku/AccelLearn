@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTasks } from '../../hooks/useTasks';
-import { getTodaysTasks, judgeTask } from '../../utils/scheduler';
+import { getTodaysTasks, judgeTask, todayString } from '../../utils/scheduler';
 import { TaskCard } from '../../components/TaskCard';
 import { AddTaskModal } from '../../components/AddTaskModal';
-import { AccelTask, AttemptResult } from '../../types/task';
+import { AccelTask, AttemptResult, ReviewEntry } from '../../types/task';
 
 export default function QueueScreen() {
   const { tasks, loading, addTask, updateTask } = useTasks();
@@ -22,7 +22,11 @@ export default function QueueScreen() {
 
   function handleJudge(task: AccelTask, result: AttemptResult) {
     const changes = judgeTask(task, result);
-    updateTask(task.id, changes);
+    const entry: ReviewEntry = { stage: task.reviewStage, result, date: todayString() };
+    updateTask(task.id, {
+      ...changes,
+      reviewHistory: [...(task.reviewHistory ?? []), entry],
+    });
     setQueue((prev) => prev.filter((t) => t.id !== task.id));
   }
 

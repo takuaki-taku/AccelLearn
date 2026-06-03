@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AccelTask, AttemptResult } from '../types/task';
+import { AccelTask, AttemptResult, ReviewEntry } from '../types/task';
 import { todayString, getInitialNextReviewDate } from '../utils/scheduler';
 
 const STORAGE_KEY = 'accellearn_tasks';
@@ -26,17 +26,20 @@ export function useTasks() {
   }, []);
 
   const addTask = useCallback(
-    async (input: Pick<AccelTask, 'title' | 'referenceUrl' | 'memo'> & { firstAttemptResult: AttemptResult }): Promise<AccelTask> => {
+    async (input: Pick<AccelTask, 'title' | 'referenceUrl' | 'memo' | 'tag'> & { firstAttemptResult: AttemptResult }): Promise<AccelTask> => {
       const today = todayString();
+      const firstEntry: ReviewEntry = { stage: 0, result: input.firstAttemptResult, date: today };
       const task: AccelTask = {
         id: generateId(),
         title: input.title,
+        tag: input.tag,
         referenceUrl: input.referenceUrl,
         memo: input.memo,
         firstAttemptResult: input.firstAttemptResult,
         reviewStage: 0,
         nextReviewDate: getInitialNextReviewDate(today, input.firstAttemptResult),
         createdAt: today,
+        reviewHistory: [firstEntry],
       };
       await persist([...tasks, task]);
       return task;

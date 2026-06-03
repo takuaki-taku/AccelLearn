@@ -13,6 +13,7 @@ import { AccelTask } from '../types/task';
 
 interface EditTaskInput {
   title: string;
+  tag?: string;
   referenceUrl?: string;
   memo?: string;
 }
@@ -25,12 +26,14 @@ interface EditTaskModalProps {
 
 export function EditTaskModal({ task, onClose, onSave }: EditTaskModalProps) {
   const [title, setTitle] = useState('');
+  const [tag, setTag] = useState('');
   const [url, setUrl] = useState('');
   const [memo, setMemo] = useState('');
 
   useEffect(() => {
     if (task) {
       setTitle(task.title);
+      setTag(task.tag ?? '');
       setUrl(task.referenceUrl ?? '');
       setMemo(task.memo ?? '');
     }
@@ -44,6 +47,7 @@ export function EditTaskModal({ task, onClose, onSave }: EditTaskModalProps) {
     if (!task || !title.trim()) return;
     onSave(task.id, {
       title: title.trim(),
+      tag: tag.trim() || undefined,
       referenceUrl: url.trim() || undefined,
       memo: memo.trim() || undefined,
     });
@@ -80,6 +84,16 @@ export function EditTaskModal({ task, onClose, onSave }: EditTaskModalProps) {
             placeholderTextColor="#52525b"
             value={title}
             onChangeText={setTitle}
+          />
+
+          <Text className="text-zinc-400 text-sm mb-1">カテゴリ（任意）</Text>
+          <TextInput
+            className="bg-zinc-800 text-white rounded-lg px-3 mb-4"
+            style={{ paddingVertical: 12 }}
+            placeholder="例: 数学, アルゴリズム"
+            placeholderTextColor="#52525b"
+            value={tag}
+            onChangeText={setTag}
           />
 
           <Text className="text-zinc-400 text-sm mb-1">URL（任意）</Text>

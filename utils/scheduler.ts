@@ -1,13 +1,12 @@
 import { AccelTask, AttemptResult } from '../types/task';
 
-// 初回登録日からの復習スケジュール（日数）
-const REVIEW_DAYS = [1, 7, 21];
+export const REVIEW_DAYS = [1, 7, 21];
 
 export function todayString(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-function addDays(dateStr: string, days: number): string {
+export function addDays(dateStr: string, days: number): string {
   const d = new Date(dateStr);
   d.setDate(d.getDate() + days);
   return d.toISOString().slice(0, 10);
