@@ -94,8 +94,8 @@ export default function QueueScreen() {
       {queue.length === 0 ? (
         <View className="flex-1 items-center justify-center">
           <Text className="text-5xl mb-4">⚡</Text>
-          <Text className="text-zinc-900 dark:text-white text-xl font-bold">今日のアクセル完了！</Text>
-          <Text className="text-zinc-500 dark:text-zinc-400 mt-2">また明日会おう</Text>
+          <Text className="text-zinc-900 dark:text-white text-xl font-bold">本日のタスク完了！</Text>
+          <Text className="text-zinc-500 dark:text-zinc-400 mt-2">また明日</Text>
         </View>
       ) : (
         <FlatList
