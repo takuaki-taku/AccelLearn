@@ -6,6 +6,11 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "userInterfaceStyle": "automatic",
     "description": "Supercharge your memory with spaced repetition. Register tasks with your results, and AccelLearn automatically schedules reviews at Day+1, Week+1, and Week+3 — based on the Ebbinghaus forgetting curve. Stop forgetting what you've learned.",
     "privacyPolicyUrl": "https://takuaki-taku.github.io/AccelLearn/",
