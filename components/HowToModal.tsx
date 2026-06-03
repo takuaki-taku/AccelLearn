@@ -24,6 +24,41 @@ function BodyText({ children }: { children: string }) {
   );
 }
 
+const CURVE_DATA = [
+  { label: '学習直後', pct: 100 },
+  { label: '1時間後',  pct: 58 },
+  { label: '1日後',    pct: 26 },
+  { label: '1週間後',  pct: 23 },
+  { label: '1ヶ月後',  pct: 21 },
+];
+
+function ForgettingCurveChart() {
+  return (
+    <View className="mt-3">
+      <Text className="text-zinc-400 dark:text-zinc-500 text-xs mb-2">記憶の定着率（復習なしの場合）</Text>
+      {CURVE_DATA.map(({ label, pct }) => (
+        <View key={label} className="flex-row items-center mb-2">
+          <Text className="text-zinc-500 dark:text-zinc-400 text-xs" style={{ width: 52 }}>
+            {label}
+          </Text>
+          <View
+            className="flex-1 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden"
+            style={{ height: 8 }}
+          >
+            <View
+              className="bg-emerald-500 rounded-full"
+              style={{ width: `${pct}%`, height: 8 }}
+            />
+          </View>
+          <Text className="text-zinc-500 dark:text-zinc-400 text-xs text-right" style={{ width: 34 }}>
+            {pct}%
+          </Text>
+        </View>
+      ))}
+    </View>
+  );
+}
+
 function ResultRow({ symbol, label, description }: { symbol: string; label: string; description: string }) {
   return (
     <View className="flex-row items-start mb-3">
@@ -75,15 +110,7 @@ export function HowToModal({ visible, onClose }: HowToModalProps) {
             <BodyText>
               1885年にドイツの心理学者エビングハウスが発見した理論。人間は学習した内容を時間とともに急速に忘れていきます。
             </BodyText>
-            <View className="mt-3 flex-row justify-around">
-              {[['1日後', '74%'], ['1週間後', '77%'], ['1ヶ月後', '79%']].map(([label, pct]) => (
-                <View key={label} className="items-center">
-                  <Text className="text-red-500 font-bold text-lg">{pct}</Text>
-                  <Text className="text-zinc-500 dark:text-zinc-400 text-xs">忘却</Text>
-                  <Text className="text-zinc-600 dark:text-zinc-500 text-xs mt-0.5">{label}</Text>
-                </View>
-              ))}
-            </View>
+            <ForgettingCurveChart />
             <View className="mt-3 pt-3 border-t border-zinc-200 dark:border-zinc-700">
               <BodyText>
                 でも「間隔を開けて繰り返す」と記憶は定着します。AccelLearnはその復習タイミングを自動で管理します。
