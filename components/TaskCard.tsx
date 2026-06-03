@@ -48,18 +48,18 @@ export function TaskCard({ task, onJudge }: TaskCardProps) {
 
   return (
     <Animated.View style={animatedStyle}>
-      <View className="bg-zinc-900 rounded-xl p-4 mb-3 border border-zinc-800">
+      <View className="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-4 mb-3 border border-zinc-200 dark:border-zinc-800">
         <TouchableOpacity onPress={openUrl} activeOpacity={task.referenceUrl ? 0.7 : 1}>
-          <Text className="text-white text-base font-semibold">{task.title}</Text>
+          <Text className="text-zinc-900 dark:text-white text-base font-semibold">{task.title}</Text>
           {task.referenceUrl && (
-            <Text className="text-yellow-400 text-xs mt-1" numberOfLines={1}>
+            <Text className="text-yellow-600 dark:text-yellow-400 text-xs mt-1" numberOfLines={1}>
               {task.referenceUrl}
             </Text>
           )}
           {task.memo ? (
-            <Text className="text-zinc-400 text-sm mt-2">{task.memo}</Text>
+            <Text className="text-zinc-500 dark:text-zinc-400 text-sm mt-2">{task.memo}</Text>
           ) : null}
-          <Text className="text-zinc-600 text-xs mt-3">
+          <Text className="text-zinc-400 dark:text-zinc-600 text-xs mt-3">
             {reviewLabel}　初回: {firstResultSymbol}
           </Text>
         </TouchableOpacity>

@@ -72,17 +72,17 @@ export default function AllTasksScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView className="flex-1 bg-zinc-950 items-center justify-center">
-        <Text className="text-zinc-400">読み込み中...</Text>
+      <SafeAreaView className="flex-1 bg-white dark:bg-zinc-950 items-center justify-center">
+        <Text className="text-zinc-500 dark:text-zinc-400">読み込み中...</Text>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-zinc-950">
+    <SafeAreaView className="flex-1 bg-white dark:bg-zinc-950">
       <View className="px-4 pt-6 pb-3">
-        <Text className="text-white text-3xl font-extrabold tracking-tight">All Tasks</Text>
-        <Text className="text-zinc-400 mt-1">
+        <Text className="text-zinc-900 dark:text-white text-3xl font-extrabold tracking-tight">All Tasks</Text>
+        <Text className="text-zinc-500 dark:text-zinc-400 mt-1">
           {tasks.length > 0 ? `${tasks.length}件登録中` : 'タスクがありません'}
         </Text>
       </View>
@@ -100,9 +100,9 @@ export default function AllTasksScreen() {
                 key={t}
                 onPress={() => setSelectedTag(t)}
                 style={{ marginRight: i < allTagFilters.length - 1 ? 8 : 0 }}
-                className={selectedTag === t ? 'bg-yellow-400 rounded-full px-4 py-1' : 'bg-zinc-800 rounded-full px-4 py-1'}
+                className={selectedTag === t ? 'bg-yellow-400 rounded-full px-4 py-1' : 'bg-zinc-100 dark:bg-zinc-800 rounded-full px-4 py-1'}
               >
-                <Text className={selectedTag === t ? 'text-zinc-900 font-semibold text-sm' : 'text-zinc-400 text-sm'}>
+                <Text className={selectedTag === t ? 'text-zinc-900 font-semibold text-sm' : 'text-zinc-500 dark:text-zinc-400 text-sm'}>
                   {t}
                 </Text>
               </TouchableOpacity>
@@ -113,11 +113,11 @@ export default function AllTasksScreen() {
 
       {/* カラムヘッダー */}
       {tasks.length > 0 && (
-        <View className="flex-row items-center px-4 py-2 border-b border-zinc-800">
-          <Text className="flex-1 text-zinc-600 text-xs">タスク名</Text>
+        <View className="flex-row items-center px-4 py-2 border-b border-zinc-200 dark:border-zinc-800">
+          <Text className="flex-1 text-zinc-400 dark:text-zinc-600 text-xs">タスク名</Text>
           {STAGE_LABELS.map((label) => (
             <View key={label} style={{ width: COL_WIDTH }} className="items-center">
-              <Text className="text-zinc-600 text-xs">{label}</Text>
+              <Text className="text-zinc-400 dark:text-zinc-600 text-xs">{label}</Text>
             </View>
           ))}
         </View>
@@ -125,7 +125,7 @@ export default function AllTasksScreen() {
 
       {tasks.length === 0 ? (
         <View className="flex-1 items-center justify-center">
-          <Text className="text-zinc-600 text-base">＋ボタンからタスクを追加してください</Text>
+          <Text className="text-zinc-400 dark:text-zinc-600 text-base">＋ボタンからタスクを追加してください</Text>
         </View>
       ) : (
         <FlatList
@@ -139,14 +139,14 @@ export default function AllTasksScreen() {
                 onPress={() => setEditingTask(item)}
                 onLongPress={() => handleLongPress(item)}
                 activeOpacity={0.7}
-                className="flex-row items-center px-4 py-3 border-b border-zinc-800"
+                className="flex-row items-center px-4 py-3 border-b border-zinc-100 dark:border-zinc-800"
               >
                 <View className="flex-1 pr-2">
-                  <Text className="text-white text-sm font-semibold" numberOfLines={1}>
+                  <Text className="text-zinc-900 dark:text-white text-sm font-semibold" numberOfLines={1}>
                     {item.title}
                   </Text>
                   {item.tag ? (
-                    <Text className="text-zinc-600 text-xs mt-0.5">{item.tag}</Text>
+                    <Text className="text-zinc-400 dark:text-zinc-600 text-xs mt-0.5">{item.tag}</Text>
                   ) : null}
                 </View>
 
@@ -155,7 +155,7 @@ export default function AllTasksScreen() {
                   const entry = history.find((e) => e.stage === stageIndex);
                   return (
                     <View key={stageIndex} style={{ width: COL_WIDTH }} className="items-center">
-                      <Text className="text-zinc-600 text-xs">{toMD(dateStr)}</Text>
+                      <Text className="text-zinc-400 dark:text-zinc-600 text-xs">{toMD(dateStr)}</Text>
                       {entry ? (
                         <Text className="text-base" style={{ lineHeight: 20 }}>
                           {RESULT_SYMBOLS[entry.result]}
