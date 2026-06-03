@@ -18,6 +18,12 @@ const RESULT_SYMBOLS: Record<AttemptResult, string> = {
   cross: '✗',
 };
 
+const RESULT_COLORS: Record<AttemptResult, string> = {
+  circle: 'text-emerald-500',
+  triangle: 'text-amber-400',
+  cross: 'text-red-500',
+};
+
 function toMD(dateStr: string): string {
   const d = new Date(dateStr);
   return `${d.getMonth() + 1}/${d.getDate()}`;
@@ -164,7 +170,7 @@ export default function AllTasksScreen() {
                     <View key={stageIndex} style={{ width: COL_WIDTH }} className="items-center">
                       <Text className={`${mutedText} text-xs`}>{toMD(dateStr)}</Text>
                       {entry ? (
-                        <Text className="text-base" style={{ lineHeight: 20 }}>
+                        <Text className={`text-base ${RESULT_COLORS[entry.result]}`} style={{ lineHeight: 20 }}>
                           {RESULT_SYMBOLS[entry.result]}
                         </Text>
                       ) : (

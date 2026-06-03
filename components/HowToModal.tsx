@@ -117,12 +117,12 @@ export function HowToModal({ visible, onClose }: HowToModalProps) {
           {/* 結果の意味 */}
           <Text className={`${titleText} text-lg font-bold mt-2 mb-3`}>結果の意味</Text>
           {[
-            { symbol: '⭕', label: 'できた', desc: 'その時点で復習終了。マスター済みとして記録されます。' },
-            { symbol: '△', label: 'ほぼできた', desc: '記録として残しますが、✗ と同じ復習スケジュールで次のステージへ進みます。' },
-            { symbol: '✗', label: 'NG', desc: '次の復習日（1日後 → 1週間後 → 3週間後）がセットされます。' },
-          ].map(({ symbol, label, desc }) => (
+            { symbol: '⭕', color: 'text-emerald-500', label: 'できた', desc: 'その時点で復習終了。マスター済みとして記録されます。' },
+            { symbol: '△', color: 'text-amber-400',   label: 'ほぼできた', desc: '記録として残しますが、✗ と同じ復習スケジュールで次のステージへ進みます。' },
+            { symbol: '✗', color: 'text-red-500',     label: 'NG', desc: '次の復習日（1日後 → 1週間後 → 3週間後）がセットされます。' },
+          ].map(({ symbol, color, label, desc }) => (
             <View key={label} className="flex-row items-start mb-3">
-              <Text className="text-2xl w-10">{symbol}</Text>
+              <Text className={`text-2xl w-10 ${color}`}>{symbol}</Text>
               <View className="flex-1">
                 <Text className={`${titleText} text-sm font-semibold`}>{label}</Text>
                 <Text className={`${mutedText} text-xs mt-0.5`}>{desc}</Text>
