@@ -2,6 +2,7 @@
   "expo": {
     "name": "AccelLearn",
     "slug": "AccelLearn",
+    "scheme": "accellearn",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
