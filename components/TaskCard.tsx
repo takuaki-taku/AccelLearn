@@ -1,4 +1,5 @@
 import { View, Text, TouchableOpacity, Linking } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -11,7 +12,7 @@ import { useTheme } from '../hooks/useTheme';
 const REVIEW_LABELS = ['第1回レビュー', '第2回レビュー', '第3回レビュー'];
 
 const RESULT_SYMBOLS: Record<AttemptResult, string> = {
-  circle: '⭕',
+  circle: '○',
   triangle: '△',
   cross: '✗',
 };
@@ -76,21 +77,24 @@ export function TaskCard({ task, onJudge }: TaskCardProps) {
         <View className="flex-row gap-2 mt-4">
           <TouchableOpacity
             onPress={() => handleJudge('cross')}
-            className="flex-1 bg-red-500 rounded-lg py-3 items-center"
+            className="flex-1 bg-red-500 rounded-lg py-3 items-center flex-row justify-center gap-1"
           >
-            <Text className="text-white font-bold text-sm">✗ NG</Text>
+            <Ionicons name="close-circle" size={18} color="white" />
+            <Text className="text-white font-bold text-sm">NG</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => handleJudge('triangle')}
-            className="flex-1 bg-amber-400 rounded-lg py-3 items-center"
+            className="flex-1 bg-amber-400 rounded-lg py-3 items-center flex-row justify-center gap-1"
           >
-            <Text className="text-zinc-900 font-bold text-sm">△ ほぼ</Text>
+            <Ionicons name="remove-circle" size={18} color="#18181b" />
+            <Text className="text-zinc-900 font-bold text-sm">ほぼ</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => handleJudge('circle')}
-            className="flex-1 bg-emerald-500 rounded-lg py-3 items-center"
+            className="flex-1 bg-emerald-500 rounded-lg py-3 items-center flex-row justify-center gap-1"
           >
-            <Text className="text-white font-bold text-sm">⭕ できた</Text>
+            <Ionicons name="checkmark-circle" size={18} color="white" />
+            <Text className="text-white font-bold text-sm">できた</Text>
           </TouchableOpacity>
         </View>
       </View>
