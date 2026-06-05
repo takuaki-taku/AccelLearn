@@ -290,17 +290,25 @@ export default function AllTasksScreen() {
                       activeOpacity={entry ? 0.5 : 1}
                       disabled={!entry}
                     >
-                      <Text className={`${mutedText} text-xs`}>{toMD(dateStr)}</Text>
-                      {entry ? (
-                        <Text
-                          className={`text-base ${RESULT_COLORS[entry.result]}`}
-                          style={{ lineHeight: 20 }}
-                        >
-                          {RESULT_SYMBOLS[entry.result]}
-                        </Text>
-                      ) : (
-                        <View style={{ height: 20 }} />
-                      )}
+                      <View style={{ height: 44, width: 44, alignItems: 'center', justifyContent: 'center' }}>
+                        {entry ? (
+                          <>
+                            <Text
+                              className={`absolute ${RESULT_COLORS[entry.result]}`}
+                              style={{ fontSize: 36, opacity: 0.5 }}
+                            >
+                              {RESULT_SYMBOLS[entry.result]}
+                            </Text>
+                            <Text className="text-white text-sm font-semibold">
+                              {toMD(dateStr)}
+                            </Text>
+                          </>
+                        ) : (
+                          <Text className="text-white text-xs font-medium">
+                            {toMD(dateStr)}
+                          </Text>
+                        )}
+                      </View>
                     </TouchableOpacity>
                   );
                 })}
