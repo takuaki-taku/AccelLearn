@@ -205,7 +205,7 @@ export function AddTaskModal({
               onPress={() => setResult('circle')}
               className={result === 'circle' ? 'flex-1 bg-emerald-500 rounded-lg py-3 items-center' : `flex-1 ${btnInactive} rounded-lg py-3 items-center border ${btnInactiveBorder}`}
             >
-              <Text className={result === 'circle' ? 'text-white font-bold text-sm' : `${btnInactiveText} font-bold text-sm`}>⭕ できた</Text>
+              <Text className={result === 'circle' ? 'text-white font-bold text-sm' : `${btnInactiveText} font-bold text-sm`}>○ できた</Text>
             </TouchableOpacity>
           </View>
 

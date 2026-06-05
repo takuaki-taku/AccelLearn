@@ -92,15 +92,15 @@ export function HowToModal({ visible, onClose }: HowToModalProps) {
               ))}
             </View>
             <Text className={`${mutedText} text-xs mt-3`}>
-              ⭕ が出た時点でそのタスクの復習は終了します
+              ○ が出た時点でそのタスクの復習は終了します
             </Text>
           </View>
 
           {/* 使い方 */}
           <Text className={`${titleText} text-lg font-bold mt-6 mb-3`}>使い方</Text>
           {[
-            { step: '1', title: 'タスクを登録する', desc: '＋ボタンからタスクを追加。タイトルと、その日解いた結果（⭕ / △ / ✗）を入力します。' },
-            { step: '2', title: "Today's Queue で復習", desc: '復習日になったタスクが自動で画面に表示されます。問題を解いてから結果を入力してください。' },
+            { step: '1', title: 'タスクを登録する', desc: '＋ボタンからタスクを追加。タイトルと、その日解いた結果（○ / △ / ✗）を入力します。' },
+            { step: '2', title: '復習日に一覧を確認する', desc: '復習日になったタスクには「今日」バッジが表示されます。タップするとジャッジ画面が開きます。' },
             { step: '3', title: '結果を入力する', desc: '結果に応じて次の復習日が自動でセットされます。' },
           ].map(({ step, title, desc }) => (
             <View key={step} className="flex-row items-start mb-4">
@@ -117,7 +117,7 @@ export function HowToModal({ visible, onClose }: HowToModalProps) {
           {/* 結果の意味 */}
           <Text className={`${titleText} text-lg font-bold mt-2 mb-3`}>結果の意味</Text>
           {[
-            { symbol: '⭕', color: 'text-emerald-500', label: 'できた', desc: 'その時点で復習終了。マスター済みとして記録されます。' },
+            { symbol: '○', color: 'text-emerald-500', label: 'できた', desc: 'その時点で復習終了。マスター済みとして記録されます。' },
             { symbol: '△', color: 'text-amber-400',   label: 'ほぼできた', desc: '記録として残しますが、✗ と同じ復習スケジュールで次のステージへ進みます。' },
             { symbol: '✗', color: 'text-red-500',     label: 'NG', desc: '次の復習日（1日後 → 1週間後 → 3週間後）がセットされます。' },
           ].map(({ symbol, color, label, desc }) => (
@@ -133,18 +133,11 @@ export function HowToModal({ visible, onClose }: HowToModalProps) {
           {/* 画面説明 */}
           <Text className={`${titleText} text-lg font-bold mt-2 mb-3`}>画面の説明</Text>
           <View className={`${cardBg} rounded-2xl border ${border} overflow-hidden`}>
-            <View className={`px-4 py-3 border-b ${border} flex-row items-center gap-2`}>
-              <Ionicons name="flash" size={16} color="#facc15" />
-              <View className="flex-1">
-                <Text className={`${titleText} text-sm font-semibold`}>Today's Queue</Text>
-                <Text className={`${mutedText} text-xs`}>今日復習すべきタスクの一覧</Text>
-              </View>
-            </View>
             <View className="px-4 py-3 flex-row items-center gap-2">
               <Ionicons name="list" size={16} color={iconColor} />
               <View className="flex-1">
                 <Text className={`${titleText} text-sm font-semibold`}>All Tasks</Text>
-                <Text className={`${mutedText} text-xs`}>全タスクと各ステージの結果を一覧で確認</Text>
+                <Text className={`${mutedText} text-xs`}>全タスクを一覧表示。今日の復習タスクは「今日」バッジ付きで強調表示されます</Text>
               </View>
             </View>
           </View>

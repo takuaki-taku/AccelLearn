@@ -10,6 +10,7 @@ import {
   Pressable,
   ScrollView,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { AccelTask } from '../types/task';
 import { useTheme } from '../hooks/useTheme';
 
@@ -24,10 +25,11 @@ interface EditTaskModalProps {
   task: AccelTask | null;
   onClose: () => void;
   onSave: (taskId: string, input: EditTaskInput) => void;
+  onDelete?: (task: AccelTask) => void;
   existingTags?: string[];
 }
 
-export function EditTaskModal({ task, onClose, onSave, existingTags = [] }: EditTaskModalProps) {
+export function EditTaskModal({ task, onClose, onSave, onDelete, existingTags = [] }: EditTaskModalProps) {
   const { isDark } = useTheme();
   const [title, setTitle] = useState('');
   const [tag, setTag] = useState('');
@@ -170,6 +172,16 @@ export function EditTaskModal({ task, onClose, onSave, existingTags = [] }: Edit
               保存する
             </Text>
           </TouchableOpacity>
+
+          {onDelete && task && (
+            <TouchableOpacity
+              onPress={() => onDelete(task)}
+              className="flex-row items-center justify-center gap-2 mt-3 py-3"
+            >
+              <Ionicons name="trash-outline" size={16} color="#ef4444" />
+              <Text className="text-red-500 text-sm">このタスクを削除</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </KeyboardAvoidingView>
     </Modal>
